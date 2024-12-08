@@ -19,8 +19,8 @@ SPACECRAFTS = pd.read_sql_query(query, conn)
 query = "SELECT * FROM SPACECRAFTS;"
 ROCKETS = pd.read_sql_query(query, conn)
 query = "SELECT * FROM ASTEROIDS;"
-ASTEROIDS = pd.read_sql_query(query, conn)
-ASTEROIDS["Launch_date"] = pd.to_datetime(ASTEROIDS["Launch_date"]).dt.date
+MISSIONS = pd.read_sql_query(query, conn)
+MISSIONS["Launch_date"] = pd.to_datetime(MISSIONS["Launch_date"]).dt.date
 # Ładowanie konfiguracji
 load_dotenv()
 openai_api_key = Config.OPENAI_API_KEY
@@ -74,9 +74,9 @@ else:
 
     # Dynamiczne generowanie suwaków dla wybranych opcji
     ranges = {}
-    dataframes = [FLEET, ROCKETS, SPACECRAFTS, ASTEROIDS]
-    dataframe_names = ["FLEET", "ROCKETS", "SPACECRAFTS", "ASTEROIDS"]
-    filtered_dfs = {"FLEET": FLEET, "ROCKETS": ROCKETS, "SPACECRAFTS": SPACECRAFTS, "ASTEROIDS": ASTEROIDS}
+    dataframes = [FLEET, ROCKETS, SPACECRAFTS, MISSIONS]
+    dataframe_names = ["FLEET", "ROCKETS", "SPACECRAFTS", "MISSIONS"]
+    filtered_dfs = {"FLEET": FLEET, "ROCKETS": ROCKETS, "SPACECRAFTS": SPACECRAFTS, "MISSIONS": MISSIONS}
 
     for option in selected_options:
         min_val = None
