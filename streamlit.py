@@ -46,21 +46,46 @@ if selected_option == "ChatBot":
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # Reakcja na wejście użytkownika
+    import time  # Import the time module for sleep
+
     if prompt := st.chat_input(""):
-        # Wyświetlanie wiadomości użytkownika
         st.chat_message("user").markdown(prompt)
-        # Dodanie wiadomości użytkownika do historii
         st.session_state.messages.append({"role": "user", "content": prompt})
 
-        # Generowanie odpowiedzi
-        response = f"{prompt}"  # Można dodać logikę odpowiedzi (np. AI)
+        # Add "model is thinking" animation
+        thinking_message = st.chat_message("assistant")
+        thinking_placeholder = thinking_message.empty()
 
-        # Wyświetlanie odpowiedzi asystenta
-        with st.chat_message("assistant"):
-            st.markdown(response)
-        # Dodanie odpowiedzi do historii
-        st.session_state.messages.append({"role": "assistant", "content": response})
+        animation_frames = ["💭", "💭.", "💭..", "💭..."]  # Define animation frames
+
+
+        def animate_thinking(placeholder, duration=200):
+            """Show animated 'thinking' for a given duration."""
+            start_time = time.time()
+            while time.time() - start_time < duration:
+                for frame in animation_frames:
+                    placeholder.markdown(f"_Model is thinking_ {frame} ")
+                    time.sleep(0.3)  # Adjust speed of animation
+
+
+        # Start the animation in a separate process (if needed, simulate delay here)
+        animate_thinking(thinking_placeholder, duration=2)
+
+        # Simulating streaming of response in chunks
+        response_chunks = []  # Replace this with streaming from your model
+        response = invoke_graph(prompt)  # Call your model or logic here
+        response_text = response.get("messages")[-1]  # Extract full response text
+
+        # Stream response in chunks
+        for chunk in response_text.split(" "):  # Example: Split by words as chunks
+            response_chunks.append(chunk)
+            response_stream = " ".join(response_chunks)
+            thinking_placeholder.markdown(response_stream)
+            time.sleep(0.03)  # Add delay for realistic streaming effect
+
+        # Once streaming is done, finalize response
+        st.session_state.messages.append({"role": "assistant", "content": response_text})
+        thinking_placeholder.markdown(response_text)  # Replace placeholder with final response
 
 else:
     # Zakres daty

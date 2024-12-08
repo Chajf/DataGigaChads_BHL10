@@ -19,9 +19,6 @@ def _set_env(var: str):
         os.environ[var] = getpass.getpass(f"{var}: ")
 
 _set_env("OPENAI_API_KEY")
-_set_env("LANGCHAIN_API_KEY")
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_PROJECT"] = "BHL10"
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
@@ -81,7 +78,7 @@ spec_T TEXT NOT NULL -- Numeric/Text - Numeric values indicate probability of a 
 User message:
 {message}
 
-Extract Name, OCC, Diameter, TOF, Launch_date, Min_dv, Duration, Stay, Class"""
+Extract Name, OCC, Diameter, TOF, Launch_date, Min_dv, Duration, Stay, spec_T"""
 
 text2sql_prompt_spacecraft = """You are expert in writing sql queries for retrieving most well fited dataset to user query.
 
@@ -204,7 +201,7 @@ def text2sql(state: text2sqlState):
         code = llm.invoke(text2sql_complete)
         match = match = re.search(r"```.*?\n(.*?)\n```", code.content, re.DOTALL)
         sql_code = match.group(1)
-        conn = sqlite3.connect("database2.db")
+        conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
         cursor.execute(sql_code)
         ans = cursor.fetchall()
