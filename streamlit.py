@@ -133,7 +133,7 @@ else:
 
         if min_val is not None and max_val is not None:
             # Wyświetlenie informacji o tym, w której ramce danych znajduje się kolumna
-            st.write(f"Kolumna `{option}` znajduje się w ramce danych: {df_found}")
+            # st.write(f"Kolumna `{option}` znajduje się w ramce danych: {df_found}")
             
             # Generowanie suwaka dla kolumny
             if isinstance(min_val, date):  # Sprawdzamy, czy to kolumna z datami
@@ -199,4 +199,4 @@ else:
             st.dataframe(filtered_df)
 
             # Potwierdzenie
-            st.success(f"Tabela `{filtered_table_name}` została utworzona w pamięci!")
+            # st.success(f"Tabela `{filtered_table_name}` została utworzona w pamięci!")
