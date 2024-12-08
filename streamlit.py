@@ -6,6 +6,7 @@ from datetime import date, timedelta
 import pandas as pd
 import sqlite3
 import numpy as np
+from agent_funs import invoke_graph
 
 # Połączenie z bazą danych SQLite
 conn = sqlite3.connect("database.db")
@@ -53,7 +54,7 @@ if selected_option == "ChatBot":
         st.session_state.messages.append({"role": "user", "content": prompt})
 
         # Generowanie odpowiedzi
-        response = f" {prompt}"  # Można dodać logikę odpowiedzi (np. AI)
+        response = f"{prompt}"  # Można dodać logikę odpowiedzi (np. AI)
 
         # Wyświetlanie odpowiedzi asystenta
         with st.chat_message("assistant"):
