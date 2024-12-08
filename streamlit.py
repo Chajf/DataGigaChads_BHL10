@@ -1,10 +1,11 @@
 import streamlit as st
-from config import Config
+from Config import Config
 from dotenv import load_dotenv
 from streamlit_option_menu import option_menu
 from datetime import date, timedelta
 import pandas as pd
 import sqlite3
+import numpy as np
 
 # Połączenie z bazą danych SQLite
 conn = sqlite3.connect("database.db")
@@ -75,7 +76,7 @@ else:
     ranges = {}
     dataframes = [FLEET, ROCKETS, SPACECRAFTS, ASTEROIDS]
     dataframe_names = ["FLEET", "ROCKETS", "SPACECRAFTS", "ASTEROIDS"]
-    filtered_dfs = {}
+    filtered_dfs = {"FLEET": FLEET, "ROCKETS": ROCKETS, "SPACECRAFTS": SPACECRAFTS, "ASTEROIDS": ASTEROIDS}
 
     for option in selected_options:
         min_val = None
@@ -126,17 +127,45 @@ else:
                 )
 
             # Filtrowanie tylko ramki, w której kolumna istnieje
-            for df, df_name in zip(dataframes, dataframe_names):
+            for df_name in dataframe_names:
                 if df_name == df_found:
-                    filtered_df = df
+                    filtered_df = filtered_dfs[df_name]
                     if pd.api.types.is_datetime64_any_dtype(filtered_df[option]):
                         filtered_df = filtered_df[(filtered_df[option] >= ranges[option][0]) & (filtered_df[option] <= ranges[option][1])]
                     else:
                         filtered_df = filtered_df[(filtered_df[option] >= ranges[option][0]) & (filtered_df[option] <= ranges[option][1])]
                     filtered_dfs[df_name] = filtered_df
+                # else:
+                #     # print(df_name)
+                #     filtered_dfs[df_name] = df.copy()
 
     # Przycisk do generowania nowych ramek danych
     if st.button("Generuj ramki"):
+
+        # # st.write()
+        #
+        # filtered_fleet = filtered_dfs['FLEET']
+        # filtered_rockets = filtered_dfs['ROCKETS']
+        # filtered_spacecraft = filtered_dfs['SPACECRAFTS']
+        # filtered_asteroids = filtered_dfs['ASTEROIDS']
+        #
+        # st.dataframe(filtered_fleet)
+        # st.dataframe(filtered_rockets)
+        # st.dataframe(filtered_spacecraft)
+        # st.dataframe(filtered_asteroids)
+        # #
+        # df1 = filtered_asteroids.copy()
+        # sizes = []
+        # for i in range(len(df1)):
+        #     row = df1.iloc[i]
+        #     size = 4/3 * np.pi * pow((row['Diameter']/2 * 10_000),3) * 0.035 #0.8 for M, 0.15 for S, 0.035 for C
+        #     sizes.append(size)
+        # #
+        # st.write(np.max(sizes))
+        # st.write(np.min(sizes))
+        # df1.drop(columns=['Spkid', 'Min_dv', 'Diameter', 'TOF', 'Stay'], inplace=True)
+        # st.dataframe(df1.iloc[0])
+
         # Wyświetlanie nowych ramek danych w pamięci
         for df_name, filtered_df in filtered_dfs.items():
             filtered_table_name = f"{df_name}_filtered"
